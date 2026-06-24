@@ -7,10 +7,11 @@
 - Created the requested Nuxt, Nitro, service, connector, repository, data, and shared domain directories.
 - Added shared domain models, close assurance contracts, and a coherent seeded demo scenario for the revenue close failure and metadata blocker.
 - Added deterministic risk, readiness, and approval services that evaluate the seeded scenario without APIs, UI, or OpenAI.
+- Added thin Nitro API routes over an in-memory close assurance read model, including approval decision handling for the seeded controller review path.
 
 ## Current Status
 
-Ready for the next implementation prompt: repositories/connectors or Nitro API routes over the deterministic services.
+Ready for the next implementation prompt: Nuxt dashboard UI or server-side OpenAI synthesis over deterministic outputs.
 
 ## Open Items
 

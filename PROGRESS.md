@@ -13,6 +13,7 @@
 - Integrated the controller explanation endpoint into the dashboard with loading, unavailable-config, error, success, and regeneration states.
 - Added a lightweight evaluation harness for deterministic close outputs and controller explanation grounding/boundary checks.
 - Added a typed skills/persona registry for the CloseGuardian agent roles and exposed it through a thin API route for demo/UI use.
+- Added a lightweight MCP-style mock connector abstraction for scheduler, metadata, incident, and approval context sources.
 
 ## Current Status
 

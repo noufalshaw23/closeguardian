@@ -5,6 +5,7 @@ import type {
   ApprovalDecisionResponse,
   ApprovalsResponse,
   AuditResponse,
+  ControllerExplanationInput,
   DashboardResponse,
   RecommendationsResponse,
   TaskDetailResponse,
@@ -147,6 +148,34 @@ export function listApprovals(): ApprovalsResponse {
 export function listAuditEvents(): AuditResponse {
   return {
     auditEvents: getReadModel().auditEvents,
+  }
+}
+
+export function getControllerExplanationInput(taskId?: string): ControllerExplanationInput | undefined {
+  const dashboard = getDashboard()
+  const detail = getTaskDetail(taskId ?? dashboard.primaryTask.id)
+
+  if (!detail) {
+    return undefined
+  }
+
+  return {
+    scenario: dashboard.scenario,
+    readinessSummary: dashboard.summary,
+    closeTask: detail.task,
+    riskAssessment: detail.riskAssessment,
+    blockers: {
+      failedJobs: detail.scheduledJobs.filter((job) => job.status === 'failed'),
+      metadataIssues: detail.metadataIssues.filter((issue) => issue.status === 'open'),
+      serviceDependencies: detail.serviceDependencies.filter(
+        (dependency) => dependency.status === 'degraded' || dependency.status === 'down',
+      ),
+    },
+    incidents: detail.incidents,
+    recommendedActions: detail.recommendedActions,
+    approvalRequests: detail.approvalRequests,
+    evidenceItems: detail.evidenceItems,
+    auditEvents: detail.auditEvents,
   }
 }
 

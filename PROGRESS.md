@@ -9,10 +9,11 @@
 - Added deterministic risk, readiness, and approval services that evaluate the seeded scenario without APIs, UI, or OpenAI.
 - Added thin Nitro API routes over an in-memory close assurance read model, including approval decision handling for the seeded controller review path.
 - Added the first Nuxt dashboard UI for the finance close command center, including task detail, approvals, agent activity, evidence, and audit surfaces.
+- Added a bounded server-side OpenAI controller explanation path over deterministic CloseGuardian inputs.
 
 ## Current Status
 
-Ready for the next implementation prompt: project package baseline/runtime verification or server-side OpenAI synthesis over deterministic outputs.
+Ready for the next implementation prompt: project package baseline/runtime verification or dashboard integration for controller explanations.
 
 ## Open Items
 

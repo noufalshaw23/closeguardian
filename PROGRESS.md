@@ -12,6 +12,7 @@
 - Added a bounded server-side OpenAI controller explanation path over deterministic CloseGuardian inputs.
 - Integrated the controller explanation endpoint into the dashboard with loading, unavailable-config, error, success, and regeneration states.
 - Added a lightweight evaluation harness for deterministic close outputs and controller explanation grounding/boundary checks.
+- Added a typed skills/persona registry for the CloseGuardian agent roles and exposed it through a thin API route for demo/UI use.
 
 ## Current Status
 

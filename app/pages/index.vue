@@ -59,8 +59,11 @@
         </div>
         <article v-for="run in dashboard.agentRuns" :key="run.id">
           <StatusBadge :value="run.status" />
-          <strong>{{ run.role.replaceAll('_', ' ') }}</strong>
-          <p>{{ run.summary }}</p>
+          <strong>{{ getPersona(run.role)?.displayName ?? run.role.replaceAll('_', ' ') }}</strong>
+          <p>{{ getPersona(run.role)?.purpose ?? run.summary }}</p>
+          <small v-if="getPersona(run.role)">
+            Guardrail: {{ getPersona(run.role)?.controlledFieldsNotDecided.slice(0, 2).join(', ') }}
+          </small>
         </article>
       </section>
 
@@ -89,12 +92,15 @@
 </template>
 
 <script setup lang="ts">
+import type { AgentRole } from '../../shared/domain'
+
 const {
   dashboard,
   taskDetail,
   recommendations,
   approvals,
   audit,
+  agentPersonas,
   controllerExplanation,
   explanationPending,
   explanationStatus,
@@ -108,6 +114,10 @@ const {
 
 await refreshAll()
 await refreshControllerExplanation()
+
+function getPersona(role: AgentRole) {
+  return agentPersonas.value?.personas.find((persona) => persona.id === role)
+}
 </script>
 
 <style scoped>
@@ -244,7 +254,8 @@ h1 {
 }
 
 .recommended-actions span,
-.agent-panel p {
+.agent-panel p,
+.agent-panel small {
   display: block;
   margin-top: 4px;
   color: #475569;
@@ -259,6 +270,12 @@ h1 {
 
 .agent-panel strong {
   text-transform: capitalize;
+}
+
+.agent-panel small {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .loading-panel {

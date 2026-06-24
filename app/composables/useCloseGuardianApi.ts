@@ -1,4 +1,5 @@
 import type {
+  AgentPersonaRegistryResponse,
   ApprovalDecision,
   ApprovalDecisionRequest,
   ApprovalDecisionResponse,
@@ -21,6 +22,10 @@ export function useCloseGuardianApi() {
   )
   const approvals = useState<ApprovalsResponse | null>('closeguardian-approvals', () => null)
   const audit = useState<AuditResponse | null>('closeguardian-audit', () => null)
+  const agentPersonas = useState<AgentPersonaRegistryResponse | null>(
+    'closeguardian-agent-personas',
+    () => null,
+  )
   const controllerExplanation = useState<ControllerExplanationResponse | null>(
     'closeguardian-controller-explanation',
     () => null,
@@ -45,12 +50,14 @@ export function useCloseGuardianApi() {
         recommendationsResponse,
         approvalsResponse,
         auditResponse,
+        agentPersonasResponse,
       ] = await Promise.all([
         $fetch<DashboardResponse>('/api/dashboard'),
         $fetch<TasksResponse>('/api/tasks'),
         $fetch<RecommendationsResponse>('/api/recommendations'),
         $fetch<ApprovalsResponse>('/api/approvals'),
         $fetch<AuditResponse>('/api/audit'),
+        $fetch<AgentPersonaRegistryResponse>('/api/agents'),
       ])
 
       dashboard.value = dashboardResponse
@@ -58,6 +65,7 @@ export function useCloseGuardianApi() {
       recommendations.value = recommendationsResponse
       approvals.value = approvalsResponse
       audit.value = auditResponse
+      agentPersonas.value = agentPersonasResponse
       taskDetail.value = await $fetch<TaskDetailResponse>(
         `/api/tasks/${dashboardResponse.primaryTask.id}`,
       )
@@ -146,6 +154,7 @@ export function useCloseGuardianApi() {
     recommendations,
     approvals,
     audit,
+    agentPersonas,
     controllerExplanation,
     explanationPending,
     explanationStatus,

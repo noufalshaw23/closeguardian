@@ -24,6 +24,15 @@
         :risk-assessment="dashboard.riskAssessment"
       />
 
+      <ExplanationPanel
+        class="full-span"
+        :explanation="controllerExplanation"
+        :loading="explanationPending"
+        :status="explanationStatus"
+        :message="explanationMessage"
+        @refresh="refreshControllerExplanation()"
+      />
+
       <section class="panel recommended-actions">
         <div class="panel-heading">
           <p class="eyebrow">Recommended actions</p>
@@ -86,13 +95,19 @@ const {
   recommendations,
   approvals,
   audit,
+  controllerExplanation,
+  explanationPending,
+  explanationStatus,
+  explanationMessage,
   pending,
   errorMessage,
   refreshAll,
   decideApproval,
+  refreshControllerExplanation,
 } = useCloseGuardianApi()
 
 await refreshAll()
+await refreshControllerExplanation()
 </script>
 
 <style scoped>

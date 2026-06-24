@@ -4,6 +4,7 @@ import type {
   ApprovalDecisionResponse,
   ApprovalsResponse,
   AuditResponse,
+  ControllerExplanationResponse,
   DashboardResponse,
   RecommendationsResponse,
   TaskDetailResponse,
@@ -20,6 +21,16 @@ export function useCloseGuardianApi() {
   )
   const approvals = useState<ApprovalsResponse | null>('closeguardian-approvals', () => null)
   const audit = useState<AuditResponse | null>('closeguardian-audit', () => null)
+  const controllerExplanation = useState<ControllerExplanationResponse | null>(
+    'closeguardian-controller-explanation',
+    () => null,
+  )
+  const explanationPending = useState<boolean>('closeguardian-explanation-pending', () => false)
+  const explanationStatus = useState<'idle' | 'ready' | 'unavailable' | 'error'>(
+    'closeguardian-explanation-status',
+    () => 'idle',
+  )
+  const explanationMessage = useState<string | null>('closeguardian-explanation-message', () => null)
   const pending = useState<boolean>('closeguardian-pending', () => false)
   const errorMessage = useState<string | null>('closeguardian-error', () => null)
 
@@ -81,6 +92,7 @@ export function useCloseGuardianApi() {
         },
       )
       await refreshAll()
+      await refreshControllerExplanation()
 
       return response
     } catch (error) {
@@ -93,6 +105,40 @@ export function useCloseGuardianApi() {
     }
   }
 
+  async function refreshControllerExplanation(taskId?: string): Promise<ControllerExplanationResponse | undefined> {
+    explanationPending.value = true
+    explanationMessage.value = null
+
+    try {
+      const response = await $fetch<ControllerExplanationResponse>('/api/copilot/explain', {
+        method: 'POST',
+        body: {
+          taskId: taskId ?? dashboard.value?.primaryTask.id,
+        },
+      })
+      controllerExplanation.value = response
+      explanationStatus.value = 'ready'
+
+      return response
+    } catch (error) {
+      const statusCode = getFetchStatusCode(error)
+      controllerExplanation.value = null
+
+      if (statusCode === 503) {
+        explanationStatus.value = 'unavailable'
+        explanationMessage.value =
+          'Controller explanation is unavailable because server-side synthesis configuration is not set.'
+      } else {
+        explanationStatus.value = 'error'
+        explanationMessage.value = getFetchErrorMessage(error)
+      }
+
+      return undefined
+    } finally {
+      explanationPending.value = false
+    }
+  }
+
   return {
     dashboard,
     tasks,
@@ -100,9 +146,30 @@ export function useCloseGuardianApi() {
     recommendations,
     approvals,
     audit,
+    controllerExplanation,
+    explanationPending,
+    explanationStatus,
+    explanationMessage,
     pending,
     errorMessage,
     refreshAll,
     decideApproval,
+    refreshControllerExplanation,
   }
+}
+
+function getFetchStatusCode(error: unknown): number | undefined {
+  if (error && typeof error === 'object' && 'statusCode' in error) {
+    return Number((error as { statusCode?: number }).statusCode)
+  }
+
+  return undefined
+}
+
+function getFetchErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return 'Unable to generate controller explanation.'
 }

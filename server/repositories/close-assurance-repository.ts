@@ -151,6 +151,10 @@ export function listAuditEvents(): AuditResponse {
   }
 }
 
+export function resetCloseAssuranceRepositoryState() {
+  approvalDecisions.clear()
+}
+
 export function getControllerExplanationInput(taskId?: string): ControllerExplanationInput | undefined {
   const dashboard = getDashboard()
   const detail = getTaskDetail(taskId ?? dashboard.primaryTask.id)

@@ -11,10 +11,11 @@
 - Added the first Nuxt dashboard UI for the finance close command center, including task detail, approvals, agent activity, evidence, and audit surfaces.
 - Added a bounded server-side OpenAI controller explanation path over deterministic CloseGuardian inputs.
 - Integrated the controller explanation endpoint into the dashboard with loading, unavailable-config, error, success, and regeneration states.
+- Added a lightweight evaluation harness for deterministic close outputs and controller explanation grounding/boundary checks.
 
 ## Current Status
 
-Ready for the next implementation prompt: project package baseline/runtime verification or demo polish.
+Ready for the next implementation prompt: project package baseline/runtime verification, eval script wiring, or demo polish.
 
 ## Open Items
 
